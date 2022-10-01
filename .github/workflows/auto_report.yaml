@@ -1,0 +1,28 @@
+name: auto_report # yml文件名
+
+on:
+  schedule:
+    - cron: "0 23 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  auto_report: # 任务名
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@main #采用main分支下的
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2 #安装node.js
+        with:
+          node-version: "16"
+
+      - name: Install Dependency
+        run: npm install
+
+      - name: Run Script
+        env:
+          STUDENT_NUMBER: ${{ secrets.STUDENT_NUMBER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          PUSHPLUS: ${{ secrets.PUSHPLUS }}
+        run: npm run autoReport

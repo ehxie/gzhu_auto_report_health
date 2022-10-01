@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "autoReport": "tsc && node ./dist/index",
+    "dev": "tsc --outDir ./dist/ && node ./dist/index",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "dayjs": "^1.11.5",
+    "puppeteer": "^18.0.5",
+    "typescript": "^4.8.4"
+  }
+}
