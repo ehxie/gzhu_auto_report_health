@@ -3,6 +3,8 @@ import axios from "axios";
 
 import { RADIO_CONFIG, CONFIG } from "./const";
 
+import { exit } from "process";
+
 export const init = async (url: string) => {
   const browser = await launch({
     headless: false,
@@ -12,6 +14,8 @@ export const init = async (url: string) => {
   const page = await browser.newPage();
 
   await page.goto(url);
+
+  page.setDefaultNavigationTimeout(10 * 1000);
 
   return page;
 };
@@ -33,7 +37,22 @@ export const login = async (page: Page) => {
   });
   await loginButton?.click();
 
-  await page.waitForNavigation();
+  await page.waitForResponse(
+    async (res) => {
+      if (res.url().includes("https://newcas.gzhu.edu.cn/cas/login")) {
+        if (res.status() === 302) {
+          return true;
+        } else {
+          console.error("账号或密码错误");
+          exit();
+        }
+      }
+      return false;
+    },
+    {
+      timeout: 50000,
+    }
+  );
 
   console.log("登录成功");
 };
@@ -81,7 +100,20 @@ export const finishForm = async (page: Page) => {
   const [submitBtn] = await page.$x('//nobr[contains(text(), "提交")]/..');
   await (submitBtn as ElementHandle<Element>).click();
 
-  await page.waitForXPath('//div[contains(text(), "打卡成功")]');
+  await page.waitForResponse(async (response) => {
+    if (
+      response.url() === "https://yqtb.gzhu.edu.cn/infoplus/interface/doAction"
+    ) {
+      const result = await response.json();
+      console.log(result);
+
+      if (result.ecode === "SUCCEED") {
+        return true;
+      }
+    }
+    return false;
+  });
+
   console.log("打卡成功");
 };
 
