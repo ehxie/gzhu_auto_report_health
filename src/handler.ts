@@ -81,7 +81,7 @@ export const finishForm = async (page: Page) => {
   const [submitBtn] = await page.$x('//nobr[contains(text(), "提交")]/..');
   await (submitBtn as ElementHandle<Element>).click();
 
-  await page.$x('//div[contains(text(), "打卡成功")]');
+  await page.waitForXPath('//div[contains(text(), "打卡成功")]');
   console.log("打卡成功");
 };
 
