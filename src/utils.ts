@@ -1,10 +1,15 @@
 import dayjs from "dayjs";
+import tz from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 
 import fs from "fs";
 import { Page } from "puppeteer";
 
+dayjs.extend(tz);
+dayjs.extend(utc);
+
 export const getNow = () => {
-  return dayjs().format("YYYY_MM_DD-HH_mm_ss");
+  return dayjs().tz("PRC").format("YYYY_MM_DD-HH_mm_ss");
 };
 
 const createDir = (path: fs.PathLike) => {
