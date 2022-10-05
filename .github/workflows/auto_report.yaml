@@ -20,9 +20,16 @@ jobs:
       - name: Install Dependency
         run: npm install
 
-      - name: Run Script
+      - name: Auto Report Health Information
         env:
           STUDENT_NUMBER: ${{ secrets.STUDENT_NUMBER }}
           PASSWORD: ${{ secrets.PASSWORD }}
           PUSHPLUS: ${{ secrets.PUSHPLUS }}
         run: npm run autoReport
+
+      - name: Storage Screenshot And Clear Old ScreenShot If Exist
+        env:
+          branch_name: feat/storage_screenshot
+          github_name: github-actions[bot]
+          github_email: github-actions[bot]@users.noreply.github.com
+        run: sh ./src/storage_screenshot.sh

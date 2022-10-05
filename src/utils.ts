@@ -22,8 +22,14 @@ export const screenshot = (() => {
   return async (page: Page, filename?: string) => {
     createDir("screenshot");
     createDir(`screenshot/${now}`);
+
+    ++screenshotIndex;
+    const mergeFilename = filename
+      ? `${screenshotIndex}__${filename}`
+      : screenshotIndex;
+
     await page.screenshot({
-      path: `./screenshot/${now}/${filename ?? ++screenshotIndex}.png`,
+      path: `./screenshot/${now}/${mergeFilename}.png`,
     });
   };
 })();

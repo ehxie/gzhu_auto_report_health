@@ -2,6 +2,7 @@ import { ElementHandle, launch, Page } from "puppeteer";
 import axios from "axios";
 
 import { RADIO_CONFIG, CONFIG } from "./const";
+import { screenshot } from "./utils";
 
 import { exit } from "process";
 
@@ -44,6 +45,7 @@ export const login = async (page: Page) => {
           return true;
         } else {
           console.error("账号或密码错误");
+          await screenshot(page, "password_error");
           exit();
         }
       }
