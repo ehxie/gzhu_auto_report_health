@@ -1,12 +1,10 @@
-import { Browser, ElementHandle, launch, Page } from "puppeteer";
+import { ElementHandle, launch, Page } from "puppeteer";
 import axios from "axios";
 
 import { RADIO_CONFIG, CONFIG } from "./const";
-import { screenshot, randomWait } from "./utils";
-import dayjs from "./dayjs";
+import { screenshot } from "./utils";
 
 import { exit } from "process";
-import { Entities } from "./types";
 
 export const init = async (url: string) => {
   const browser = await launch({
@@ -30,11 +28,10 @@ export const init = async (url: string) => {
 
   page.setDefaultNavigationTimeout(10 * 1000);
 
-  return { page, browser };
+  return page;
 };
 
 export const login = async (page: Page) => {
-  await randomWait();
   console.log("正在登录");
   if (!CONFIG.STUDENT_NUMBER || !CONFIG.PASSWORD) {
     throw TypeError("请先配置账号密码");
@@ -43,7 +40,6 @@ export const login = async (page: Page) => {
   const studentNumberInput = await page.waitForSelector("#un");
   await studentNumberInput?.type(CONFIG.STUDENT_NUMBER, { delay: 100 });
 
-  await randomWait();
   const passwordInput = await page.waitForSelector("#pd");
   await passwordInput?.type(CONFIG.PASSWORD, { delay: 100 });
 
@@ -73,53 +69,8 @@ export const login = async (page: Page) => {
   console.log("登录成功");
 };
 
-export const checkStatus = async (page: Page, browser: Browser) => {
-  const cookies = await page.cookies();
-  const healthStatusPage = await browser.newPage();
-
-  healthStatusPage.setCookie(...cookies);
-
-  await randomWait();
-
-  await healthStatusPage.goto(
-    "https://yqtb.gzhu.edu.cn/taskcenter/workflow/done"
-  );
-
-  await healthStatusPage.waitForResponse(async (response) => {
-    if (
-      response
-        .url()
-        .includes(
-          "https://yqtb.gzhu.edu.cn/taskcenter/api/me/processes/done"
-        ) &&
-      response.ok()
-    ) {
-      const { entities: data = [] } = (await response.json()) as {
-        entities: Entities;
-      };
-      const reportItem = data.find((item) =>
-        item.name.includes("学生健康状况申报")
-      );
-      const nowSecond = dayjs().valueOf() / 1000;
-
-      const aDay = 60 * 60 * 24;
-      if (reportItem && nowSecond - reportItem.update < aDay) {
-        console.log(`${reportItem.update} 已完成打卡`);
-        exit();
-      } else {
-        return true;
-      }
-    }
-    return false;
-  });
-  healthStatusPage.close();
-  console.log("今日还未进行打卡");
-};
-
 export const gotoHealthReportPage = async (page: Page) => {
   console.log("进入健康上报页面");
-
-  await randomWait();
 
   await page.waitForSelector(".introduce_name", {
     visible: true,
@@ -133,8 +84,6 @@ export const gotoHealthReportPage = async (page: Page) => {
 
 export const finishForm = async (page: Page) => {
   console.log("开始填表");
-
-  await randomWait();
 
   await page.waitForSelector("#title_content", {
     visible: true,
@@ -162,8 +111,6 @@ export const finishForm = async (page: Page) => {
   console.log("填写完成，提交表单");
   const [submitBtn] = await page.$x('//nobr[contains(text(), "提交")]/..');
   await (submitBtn as ElementHandle<Element>).click();
-
-  await randomWait();
 
   await page.waitForResponse(async (response) => {
     if (

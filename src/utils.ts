@@ -1,7 +1,12 @@
-import dayjs from "./dayjs";
+import dayjs from "dayjs";
+import tz from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 
 import fs from "fs";
 import { Page } from "puppeteer";
+
+dayjs.extend(tz);
+dayjs.extend(utc);
 
 export const getNow = () => {
   return dayjs().tz("PRC").format("YYYY_MM_DD-HH_mm_ss");
@@ -33,35 +38,3 @@ export const screenshot = (() => {
     });
   };
 })();
-
-export const wait = (delay: number) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve("");
-    }, delay);
-  });
-};
-
-interface RandomWait {
-  maxTime?: number;
-  minTime?: number;
-}
-export const randomWait = async (params?: RandomWait) => {
-  const { maxTime = 5000, minTime = 1000 } = params ?? {};
-
-  if (maxTime < maxTime) {
-    throw TypeError(`maxTime ${maxTime} must be gt then minTime ${minTime}`);
-  }
-
-  const random = Math.random();
-
-  let time = random;
-  do {
-    time = time * 10;
-  } while (time <= minTime);
-  time = time % maxTime;
-
-  time = Math.floor(time);
-
-  await wait(time);
-};
