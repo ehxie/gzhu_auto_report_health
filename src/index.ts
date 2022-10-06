@@ -1,9 +1,8 @@
-import { Browser, Page } from "puppeteer";
+import { Page } from "puppeteer";
 
 import {
   init,
   login,
-  checkStatus,
   gotoHealthReportPage,
   finishForm,
   notify,
@@ -12,9 +11,8 @@ import { TARGET_URL } from "./const";
 import { getNow, screenshot } from "./utils";
 import { exit } from "process";
 
-const pipeline: ((page: Page, browser: Browser) => Promise<void>)[] = [
+const pipeline: ((page: Page) => Promise<void>)[] = [
   login,
-  checkStatus,
   gotoHealthReportPage,
   finishForm,
 ];
@@ -27,13 +25,13 @@ const MAX_RETRY_TIME = 3;
 
   let index = 0;
   let retry = 0;
-  const { page, browser } = await init(TARGET_URL);
+  const page = await init(TARGET_URL);
 
   console.log("begin:", getNow());
 
   while (retry < MAX_RETRY_TIME && index < pipeline.length) {
     try {
-      await pipeline[index](page, browser);
+      await pipeline[index](page);
       retry = 0;
       index++;
       isSuccess = true;
