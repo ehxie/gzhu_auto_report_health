@@ -14,7 +14,17 @@ export const init = async (url: string) => {
 
   const page = await browser.newPage();
 
-  await page.goto(url);
+  let retry = 3;
+
+  while (retry) {
+    try {
+      await page.goto(url);
+      retry = 0;
+    } catch (e) {
+      screenshot(page, "init_fail");
+      retry--;
+    }
+  }
 
   page.setDefaultNavigationTimeout(10 * 1000);
 
