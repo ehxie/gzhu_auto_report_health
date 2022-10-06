@@ -48,9 +48,9 @@ const MAX_RETRY_TIME = 3;
   console.log("end:", getNow());
 
   if (isSuccess) {
-    await notify("健康打卡通知", "打卡成功");
+    await notify("健康打卡通知", "健康打卡成功");
   } else {
-    await notify("健康打卡通知", "打卡失败");
+    await notify("健康打卡通知", "健康打卡失败，请自行打卡！");
   }
   exit();
 })();
