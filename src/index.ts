@@ -31,6 +31,10 @@ const MAX_RETRY_TIME = 3;
 
   while (retry < MAX_RETRY_TIME && index < pipeline.length) {
     try {
+      if (retry > 0) {
+        console.log("刷新页面");
+        await page.reload();
+      }
       await pipeline[index](page);
       retry = 0;
       index++;
@@ -42,7 +46,6 @@ const MAX_RETRY_TIME = 3;
 
       retry++;
       console.log(`重试第${retry}次`);
-      await page.reload();
     }
   }
   console.log("end:", getNow());
