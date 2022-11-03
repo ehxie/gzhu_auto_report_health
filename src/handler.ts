@@ -13,6 +13,7 @@ export const init = async (url: string) => {
   });
 
   const page = await browser.newPage();
+  page.setDefaultNavigationTimeout(60 * 1000);
 
   let retry = 3;
 
@@ -25,8 +26,6 @@ export const init = async (url: string) => {
       retry--;
     }
   }
-
-  page.setDefaultNavigationTimeout(10 * 1000);
 
   return page;
 };
