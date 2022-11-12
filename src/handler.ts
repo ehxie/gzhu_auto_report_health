@@ -96,7 +96,7 @@ export const finishForm = async (page: Page) => {
         await page.tap(`input[name=${name}]`);
         radios[radioIndex].click();
 
-        resolve();
+        setTimeout(resolve, 2000);
       });
     });
   }, Promise.resolve());
