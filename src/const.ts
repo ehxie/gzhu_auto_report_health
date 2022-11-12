@@ -7,11 +7,10 @@ export const TARGET_URL = "https://yqtb.gzhu.edu.cn/infoplus/form/XNYQSB/start";
  * value: 选择的 radio 位置(从0开始)
  */
 export const RADIO_CONFIG = {
-  fieldJBXXdrsfwc: 0, // 当日是否外出
-  fieldYQJLsfjcqtbl: 0, // 是否接触过半个月内有疫情重点地区旅居史的人员
   fieldJKMsfwlm: 0, // 健康码是否为绿码
+  fieldSTQKbrstzk1: 0, // 本人身体状况
   fieldCXXXsftjhb: 0, // 健康码是否为绿码
-};
+} as Record<string, number>;
 
 export const CONFIG = {
   STUDENT_NUMBER: process.env.STUDENT_NUMBER,
