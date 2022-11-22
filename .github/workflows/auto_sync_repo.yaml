@@ -1,0 +1,22 @@
+name: auto_update_repo # 自动与源仓库同步
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  auto_update_repo: # 任务名
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main #采用main分支下的
+      - name: Auto sync repo
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git fetch --all
+          git checkout main
+          git remote add sourceRepo https://github.com/ehxie/gzhu_auto_report_health
+          git pull -r sourceRepo master
+          git push
