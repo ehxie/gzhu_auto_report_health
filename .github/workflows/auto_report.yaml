@@ -2,7 +2,7 @@ name: auto_report # yml文件名
 
 on:
   schedule:
-    - cron: "0 23 * * *"
+    - cron: "0 2 * * *"
 
   workflow_dispatch:
 
